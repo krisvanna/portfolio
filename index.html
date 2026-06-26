@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kris Vanna — VFX Artist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0A0A0F;
+    --surface: #1E1E2A;
+    --border: #3D3D52;
+    --text: #F0EDE6;
+    --muted: #9999AA;
+    --gold: #C8A96E;
+    --gold-dim: rgba(200,169,110,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── FILM GRAIN ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+    animation: grain 0.5s steps(2) infinite;
+  }
+  @keyframes grain {
+    0%   { transform: translate(0,0); }
+    25%  { transform: translate(-2%, -3%); }
+    50%  { transform: translate(3%, 2%); }
+    75%  { transform: translate(-1%, 4%); }
+    100% { transform: translate(2%, -1%); }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    background: linear-gradient(to bottom, rgba(10,10,15,0.95), transparent);
+  }
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 4rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(200,169,110,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 80% 70%, rgba(100,80,200,0.04) 0%, transparent 60%);
+  }
+  .hero-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.6s forwards;
+  }
+  .hero-name em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .hero-tagline {
+    margin-top: 2rem;
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 520px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1s forwards;
+  }
+  .hero-scroll {
+    margin-top: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.4s forwards;
+  }
+  .hero-scroll span {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--border);
+  }
+  .scroll-line {
+    width: 60px;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: var(--gold);
+    animation: scanline 2s ease-in-out 2s infinite;
+  }
+  @keyframes scanline { 0%{left:-100%} 100%{left:100%} }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 7rem 4rem; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 300;
+    color: var(--text);
+  }
+  .divider {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 200px;
+  }
+
+  /* ── ABOUT ── */
+  #about { border-top: 1px solid var(--border); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+  .about-bio {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.85;
+  }
+  .about-bio strong { color: var(--text); font-weight: 400; }
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  .stat-item { border-left: 2px solid var(--gold-dim); padding-left: 1.2rem; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.4rem;
+  }
+
+  /* ── EXPERIENCE ── */
+  #experience { background: var(--surface); }
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s;
+  }
+  .exp-item:first-child { border-top: 1px solid var(--border); }
+  .exp-meta {}
+  .exp-company {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .exp-period {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--border);
+    margin-top: 0.4rem;
+    letter-spacing: 0.08em;
+  }
+  .exp-loc {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--border);
+    margin-top: 0.2rem;
+  }
+  .exp-role {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    margin-bottom: 0.8rem;
+  }
+  .exp-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  /* ── SKILLS ── */
+  #skills { border-top: 1px solid var(--border); }
+  .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem; }
+  .skill-group {}
+  .skill-group-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .tag:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: var(--gold-dim);
+  }
+
+  /* ── PROJECTS ── */
+  #projects { background: var(--surface); }
+  .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+  .project-card {
+    background: var(--bg);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px; height: 0;
+    background: var(--gold);
+    transition: height 0.4s ease;
+  }
+  .project-card:hover::before { height: 100%; }
+  .project-card:hover { background: #13131C; }
+  .project-type {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .project-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  .project-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.5rem; }
+  .project-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.7rem;
+    background: var(--gold-dim);
+    color: var(--gold);
+  }
+
+  /* ── CONTACT ── */
+  #contact { border-top: 1px solid var(--border); text-align: center; }
+  .contact-inner { max-width: 600px; margin: 0 auto; }
+  .contact-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+  .contact-title em { font-style: italic; color: var(--gold); }
+  .contact-sub {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 3rem;
+  }
+  .contact-links { display: flex; flex-direction: column; gap: 0.8rem; align-items: center; }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .contact-link:hover { color: var(--gold); }
+  .contact-link span { color: var(--border); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: var(--border);
+    text-transform: uppercase;
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero, section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">KV</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <p class="hero-label">VFX Artist &nbsp;/&nbsp; Camera Matchmove &nbsp;/&nbsp; Rotomation</p>
+  <h1 class="hero-name">Kris<br><em>Vanna</em></h1>
+  <p class="hero-tagline">Crafting invisible illusions for Hollywood-scale productions — where precision meets the art of motion.</p>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-label">01</span>
+    <h2 class="section-title">About</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-bio reveal">
+      <p>
+        I'm <strong>Krissada Wannawanna</strong>, a VFX artist based in Thailand specializing in <strong>camera matchmoving</strong> and <strong>rotomation</strong>. I've contributed to Hollywood-scale productions at <strong>Yannix</strong> — one of Asia's leading post-production studios — working on both released titles and upcoming international films.
+      </p>
+      <br>
+      <p>
+        Grounded in core 3D disciplines — modeling, UV unwrapping, texturing, animation, lighting, and simulation — I bring both creative sensibility and technical precision to every pipeline I work in. I hold a Bachelor's degree in Multimedia Technology and Animation from <strong>Mae Fah Luang University</strong> (GPAX 3.57).
+      </p>
+    </div>
+    <div class="about-stats reveal">
+      <div class="stat-item">
+        <div class="stat-num">3.57</div>
+        <div class="stat-label">GPA · Mae Fah Luang University</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">2+</div>
+        <div class="stat-label">Years in 3D & VFX Production</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">HW</div>
+        <div class="stat-label">Hollywood-Scale Productions</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">🏆</div>
+        <div class="stat-label">JIWC 2024 International Finalist</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header reveal">
+    <span class="section-label">02</span>
+    <h2 class="section-title">Experience</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="exp-list">
+
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <div class="exp-company">Yannix</div>
+        <div class="exp-period">May 2026 – Jun 2026</div>
+        <div class="exp-loc">Bangkok, TH</div>
+      </div>
+      <div>
+        <div class="exp-role">Production Operator<br><em style="font-size:1.1rem;color:var(--gold);">Camera Matchmove</em></div>
+        <p class="exp-desc">Contributed to Hollywood-scale film productions as part of a professional VFX pipeline. Performed 2D feature tracking to support camera solves and accurately reconstructed camera movement and positioning in 3D environments to meet broadcast and theatrical delivery standards.</p>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <div class="exp-company">Yannix</div>
+        <div class="exp-period">Jan 2026 – Apr 2026</div>
+        <div class="exp-loc">Bangkok, TH</div>
+      </div>
+      <div>
+        <div class="exp-role">Internship<br><em style="font-size:1.1rem;color:var(--gold);">Rotomation Artist</em></div>
+        <p class="exp-desc">Worked on multiple international film productions across various stages of post-production. Responsible for rotomating characters, creatures, and hard-surface objects with a focus on realistic animation principles, precise motion matching, and studio-level quality standards.</p>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <div class="exp-company">MFU</div>
+        <div class="exp-period">2022 – 2026</div>
+        <div class="exp-loc">Chiang Rai, TH</div>
+      </div>
+      <div>
+        <div class="exp-role">Teaching Assistant<br><em style="font-size:1.1rem;color:var(--gold);">3D & Animation</em></div>
+        <p class="exp-desc">Assisted instructors in teaching and mentoring junior students across 3D Texturing, Lighting & Rendering, and 3D Animation courses. Provided support on core concepts, production techniques, and industry-standard workflows.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-label">03</span>
+    <h2 class="section-title">Skills</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-group reveal">
+      <div class="skill-group-title">3D &amp; VFX Software</div>
+      <div class="skill-tags">
+        <span class="tag">Maya</span>
+        <span class="tag">Houdini</span>
+        <span class="tag">Blender</span>
+        <span class="tag">ZBrush</span>
+        <span class="tag">Substance Painter</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">VFX Specialization</div>
+      <div class="skill-tags">
+        <span class="tag">Matchmoving</span>
+        <span class="tag">Camera Tracking</span>
+        <span class="tag">Rotomation</span>
+        <span class="tag">2D Feature Tracking</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">3D Production</div>
+      <div class="skill-tags">
+        <span class="tag">Modeling</span>
+        <span class="tag">UV Unwrapping</span>
+        <span class="tag">Texturing</span>
+        <span class="tag">Animation</span>
+        <span class="tag">Lighting</span>
+        <span class="tag">Simulation</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Creative &amp; Languages</div>
+      <div class="skill-tags">
+        <span class="tag">Graphic Design</span>
+        <span class="tag">Video Editing</span>
+        <span class="tag">Content Creation</span>
+        <span class="tag">Thai (Native)</span>
+        <span class="tag">English (Conversational)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-label">04</span>
+    <h2 class="section-title">Projects</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <div class="project-type">AR / Competition</div>
+      <div class="project-name">Thai Culture AR Filters</div>
+      <p class="project-desc">Developed an augmented reality project featuring Instagram filters inspired by the cultural identities of Thailand's four regions. Winner and International Finalist at JIWC 2024 — promoting Thai heritage through interactive social media experiences.</p>
+      <div class="project-tags">
+        <span class="project-tag">AR</span>
+        <span class="project-tag">Instagram Filter</span>
+        <span class="project-tag">Cultural Design</span>
+        <span class="project-tag">JIWC 2024</span>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-type">VFX / Professional</div>
+      <div class="project-name">Hollywood Production Pipeline</div>
+      <p class="project-desc">Contributed to multiple international film productions at Yannix post-production studio — handling camera matchmoving and rotomation tasks for both released titles and upcoming projects, delivering work to broadcast and theatrical quality standards.</p>
+      <div class="project-tags">
+        <span class="project-tag">Matchmove</span>
+        <span class="project-tag">Rotomation</span>
+        <span class="project-tag">Yannix</span>
+        <span class="project-tag">Feature Film</span>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-type">Education / Mentorship</div>
+      <div class="project-name">3D Animation Curriculum</div>
+      <p class="project-desc">Designed and delivered hands-on tutorial sessions for junior students in 3D Texturing, Lighting & Rendering, and Animation courses — bridging the gap between academic learning and industry production practices.</p>
+      <div class="project-tags">
+        <span class="project-tag">3D Texturing</span>
+        <span class="project-tag">Lighting</span>
+        <span class="project-tag">Animation</span>
+        <span class="project-tag">Mentorship</span>
+      </div>
+    </div>
+    <div class="project-card reveal" style="display:flex;align-items:center;justify-content:center;min-height:220px;border:1px dashed var(--border);background:transparent;">
+      <div style="text-align:center;">
+        <div class="project-type" style="margin-bottom:0.5rem;">Coming Soon</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--border);">Your Next Project</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <h2 class="contact-title reveal">Let's work<br><em>together.</em></h2>
+    <p class="contact-sub reveal">Open to VFX studio opportunities, freelance projects, and collaborations.</p>
+    <div class="contact-links reveal">
+      <a href="mailto:krisvanna.official@gmail.com" class="contact-link">
+        <span>✉</span> krisvanna.official@gmail.com
+      </a>
+      <a href="tel:0833234323" class="contact-link">
+        <span>☎</span> 083-323-4323
+      </a>
+      <a href="#" class="contact-link">
+        <span>📍</span> Lamphun, Thailand
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Kris Vanna — All Rights Reserved</p>
+  <p>VFX Artist · Matchmove · Rotomation</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
