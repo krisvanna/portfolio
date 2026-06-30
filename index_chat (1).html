@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kris Vanna | VFX Artist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0A0A0F;
+    --surface: #1A1A26;
+    --border: #2E2E42;
+    --text: #F0EDE6;
+    --muted: #9090A8;
+    --theme: #20B2AA;
+    --theme-dim: rgba(32, 178, 170, 0.12);
+    --glass: rgba(255,255,255,0.06);
+    --glass-border: rgba(255,255,255,0.12);
+    --radius-sm: 10px;
+    --radius-md: 20px;
+    --radius-lg: 28px;
+    --radius-xl: 36px;
+    --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.35);
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --shadow-modal: 0 24px 64px rgba(0, 0, 0, 0.6);
+    --ease-apple: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html[data-theme="light"] {
+    --bg: #FAFAFA;
+    --surface: #FFFFFF;
+    --border: #E2E2E2;
+    --text: #111111;
+    --muted: #6B6B6B;
+    --theme: #111111;
+    --theme-dim: rgba(17, 17, 17, 0.06);
+    --glass: rgba(255,255,255,0.55);
+    --glass-border: rgba(0,0,0,0.08);
+    --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.08);
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.10);
+    --shadow-modal: 0 24px 64px rgba(0, 0, 0, 0.18);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+    transition: background 0.5s var(--ease-apple), color 0.5s var(--ease-apple);
+  }
+
+  /* ── FILM GRAIN ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+    animation: grain 0.5s steps(2) infinite;
+    transition: opacity 0.5s var(--ease-apple);
+  }
+  html[data-theme="light"] body::after { opacity: 0.012; }
+  @keyframes grain {
+    0%   { transform: translate(0,0); }
+    25%  { transform: translate(-2%, -3%); }
+    50%  { transform: translate(3%, 2%); }
+    75%  { transform: translate(-1%, 4%); }
+    100% { transform: translate(2%, -1%); }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 1.2rem; left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 0.85rem 1.6rem;
+    width: min(90%, 980px);
+    background: var(--glass);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.08);
+    transition: background 0.5s var(--ease-apple), border-color 0.5s var(--ease-apple), top 0.4s var(--ease-apple), box-shadow 0.4s var(--ease-apple);
+  }
+  nav.scrolled {
+    top: 0.7rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .nav-logo {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    color: var(--theme);
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+  .nav-links a {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s var(--ease-apple);
+  }
+  .nav-links a:hover { color: var(--theme); }
+
+  .theme-toggle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.35s var(--ease-apple);
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover {
+    border-color: var(--theme);
+    transform: scale(1.08);
+  }
+  .theme-toggle svg {
+    width: 16px; height: 16px;
+    stroke: var(--text);
+    transition: stroke 0.3s;
+  }
+  .theme-toggle .icon-moon { display: none; }
+  html[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+  html[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+  /* ── HERO ── */
+  #main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 4rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-slider-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-color: var(--bg);
+  }
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+  }
+  .hero-slide.active {
+    opacity: 0.4; /* dim image to make text readable */
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to top, var(--bg) 10%, transparent 60%, rgba(10,10,15,0.6) 100%);
+    transition: background 0.5s var(--ease-apple);
+  }
+  html[data-theme="light"] .hero-overlay {
+    background: linear-gradient(to top, var(--bg) 10%, transparent 60%, rgba(250,250,250,0.65) 100%);
+  }
+
+  .hero-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--theme);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+  .hero-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(3.4rem, 9vw, 7.8rem);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.6s forwards;
+  }
+  .hero-name em {
+    font-style: normal;
+    font-weight: 300;
+    color: var(--theme);
+  }
+  .hero-tagline {
+    margin-top: 2rem;
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 520px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1s forwards;
+  }
+  .hero-scroll {
+    margin-top: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.4s forwards;
+  }
+  .hero-scroll span {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--border);
+  }
+  .scroll-line {
+    width: 60px;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: var(--theme);
+    animation: scanline 2s ease-in-out 2s infinite;
+  }
+  @keyframes scanline { 0%{left:-100%} 100%{left:100%} }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 7rem 4rem; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--theme);
+  }
+  .section-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .divider {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 200px;
+  }
+
+  /* ── ABOUT ── */
+  #about { border-top: 1px solid var(--border); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .about-bio {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.85;
+  }
+  .about-bio strong { color: var(--text); font-weight: 400; }
+  .about-image img {
+    width: 100%;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    filter: grayscale(20%) contrast(1.1);
+    transition: filter 0.4s ease, box-shadow 0.4s ease;
+    box-shadow: var(--shadow-card);
+  }
+  .about-image img:hover {
+    filter: grayscale(0%) contrast(1);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  }
+
+  /* ── EXPERIENCE ── */
+  #experience { background: var(--surface); }
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: background 0.3s;
+    margin-bottom: 0.25rem;
+  }
+  .exp-item:first-child { border-top: 1px solid var(--border); }
+  .exp-item:hover { background: rgba(255,255,255,0.025); }
+  .exp-company {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--theme);
+  }
+  .exp-period {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--border);
+    margin-top: 0.4rem;
+    letter-spacing: 0.08em;
+  }
+  .exp-loc {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--border);
+    margin-top: 0.2rem;
+  }
+  .exp-role {
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.8rem;
+  }
+  .exp-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  /* ── SKILLS ── */
+  #skills { border-top: 1px solid var(--border); }
+  .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem 4rem; }
+  .skill-group-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--theme);
+    margin-bottom: 1rem;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tag {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 0.01em;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 999px;
+    color: var(--muted);
+    transition: all 0.3s var(--ease-apple);
+    cursor: default;
+  }
+  .tag:hover {
+    border-color: var(--theme);
+    color: var(--theme);
+    background: var(--theme-dim);
+    transform: translateY(-2px);
+  }
+
+  /* ── PROJECTS ── */
+  #projects { background: var(--surface); }
+  .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .project-card {
+    border-radius: var(--radius-md);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 16 / 9;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border);
+    transition: box-shadow 0.4s var(--ease-apple), transform 0.4s var(--ease-apple), border-color 0.4s var(--ease-apple);
+    background: var(--bg);
+  }
+  .project-card:hover {
+    box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+    transform: translateY(-6px) scale(1.005);
+    border-color: var(--theme);
+  }
+
+  /* Full-bleed image */
+  .project-img-wrapper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+  .project-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.55s ease;
+    display: block;
+  }
+  .project-card:hover .project-img-wrapper img {
+    transform: scale(1.05);
+  }
+
+  /* Text overlay at bottom center */
+  .project-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(
+      to top,
+      rgba(6, 6, 12, 0.95) 0%,
+      rgba(6, 6, 12, 0.4) 45%,
+      rgba(6, 6, 12, 0.0) 80%
+    );
+    opacity: 0.9;
+    transition: opacity 0.35s ease;
+  }
+  .project-card:hover .project-overlay {
+    opacity: 1;
+    background: linear-gradient(
+      to top,
+      rgba(6, 6, 12, 0.98) 0%,
+      rgba(6, 6, 12, 0.5) 50%,
+      rgba(6, 6, 12, 0.05) 85%
+    );
+  }
+
+  .project-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: 0.8rem;
+  }
+
+  /* Software pill circles */
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .project-tag {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+    padding: 0.4rem 0.9rem;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #fff;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.25);
+    text-transform: uppercase;
+  }
+
+  /* ── MODALS ── */
+  .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(6, 6, 10, 0.5);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+  }
+  .modal-overlay.active {
+      display: flex;
+  }
+  .modal-content {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      padding: 3rem;
+      box-shadow: var(--shadow-modal), inset 0 1px 0 rgba(255,255,255,0.08);
+      backdrop-filter: blur(30px) saturate(160%);
+      -webkit-backdrop-filter: blur(30px) saturate(160%);
+  }
+  .modal-close {
+      position: absolute;
+      top: 1.2rem;
+      right: 1.2rem;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 50%;
+      color: var(--muted);
+      font-size: 1.1rem;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      line-height: 1;
+      transition: all 0.3s var(--ease-apple);
+      font-family: 'Manrope', sans-serif;
+      backdrop-filter: blur(10px);
+  }
+  .modal-close:hover {
+    background: var(--theme-dim);
+    border-color: var(--theme);
+    color: var(--theme);
+    transform: scale(1.08) rotate(90deg);
+  }
+  
+  .modal-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      color: var(--theme);
+  }
+  
+  .slider-container {
+      position: relative;
+      width: 100%;
+      background: #000;
+      margin-bottom: 2rem;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+  }
+  .slider-slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+  }
+  .slider-slide.active { display: block; }
+  .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(10, 10, 20, 0.5);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-family: 'Manrope', sans-serif;
+      letter-spacing: 0.05em;
+      transition: all 0.3s var(--ease-apple);
+      backdrop-filter: blur(10px);
+  }
+  .slider-btn:hover {
+    background: var(--theme);
+    border-color: var(--theme);
+    color: #fff;
+    transform: translateY(-50%) scale(1.08);
+  }
+  .slider-btn.prev { left: 0.75rem; }
+  .slider-btn.next { right: 0.75rem; }
+
+  .modal-details h4 {
+      font-family: 'Space Mono', monospace;
+      color: var(--theme);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin: 1.5rem 0 0.5rem 0;
+  }
+  .modal-details p, .modal-details li {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 0.5rem;
+  }
+  .modal-details ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+  .modal-details strong { color: var(--text); font-weight: 400; }
+
+  /* ── CONTACT ── */
+  #contact { border-top: 1px solid var(--border); text-align: center; }
+  .contact-inner { max-width: 600px; margin: 0 auto; }
+  .contact-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(2.2rem, 4.6vw, 3.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+  .contact-title em { font-style: normal; font-weight: 300; color: var(--theme); }
+  .contact-sub {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 3rem;
+  }
+  .contact-links { display: flex; flex-direction: column; gap: 0.8rem; align-items: center; }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .contact-link:hover { color: var(--theme); }
+  .contact-link span { color: var(--border); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.2);
+  }
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: var(--border);
+    text-transform: uppercase;
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    #main, section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; padding: 1.75rem 1rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .modal-content { padding: 1.5rem; border-radius: var(--radius-md); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#main" class="nav-logo">KV</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="main">
+  <div class="hero-slider-bg" id="heroSlider">
+      <img src="godzilla.png" class="hero-slide active" alt="Godzilla Background">
+      <img src="pantheon.jpg" class="hero-slide" alt="Pantheon Background">
+      <img src="whale.jpg" class="hero-slide" alt="Whale Background">
+      <img src="GZ_thumbnail.jpg" class="hero-slide" alt="Godzilla Alternate Background">
+  </div>
+  <div class="hero-overlay"></div>
+  
+  <p class="hero-label">VFX Artist &nbsp;/&nbsp; Camera Matchmove &nbsp;/&nbsp; Rotomation</p>
+  <h1 class="hero-name">Kris<br><em>Vanna</em></h1>
+  <p class="hero-tagline">VFX artist specializing in camera matchmoving and rotomation, bringing technical precision to international productions.</p>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-label">01</span>
+    <h2 class="section-title">About</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-image reveal">
+      <img src="Profile_Pic.jpg" alt="Kris Vanna Profile Picture">
+    </div>
+    <div class="about-bio reveal">
+      <p>
+        I'm <strong>Krissada Wannawanna</strong>, a VFX artist based in Thailand specializing in <strong>camera matchmoving</strong> and <strong>rotomation</strong>. I've contributed to Hollywood-scale productions at <strong>Yannix</strong>, one of Asia's leading post-production studios, working on both released titles and upcoming international films.
+      </p>
+      <br>
+      <p>
+        Grounded in core 3D disciplines: modeling, UV unwrapping, texturing, animation, lighting, and simulation. I bring both creative sensibility and technical precision to every pipeline I work in. I hold a Bachelor's degree in Multimedia Technology and Animation from <strong>Mae Fah Luang University</strong>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header reveal">
+    <span class="section-label">02</span>
+    <h2 class="section-title">Experience</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="exp-list">
+
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <div class="exp-company">Yannix</div>
+        <div class="exp-period">May 2026 – Jun 2026</div>
+        <div class="exp-loc">Bangkok, TH</div>
+      </div>
+      <div>
+        <div class="exp-role">Production Operator<br><em style="font-size:1.1rem;color:var(--theme);">Camera Matchmove</em></div>
+        <p class="exp-desc">Contributed to Hollywood-scale film productions as part of a professional VFX pipeline. Performed 2D feature tracking to support camera solves and accurately reconstructed camera movement and positioning in 3D environments to meet broadcast and theatrical delivery standards.</p>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <div class="exp-company">Yannix</div>
+        <div class="exp-period">Jan 2026 – Apr 2026</div>
+        <div class="exp-loc">Bangkok, TH</div>
+      </div>
+      <div>
+        <div class="exp-role">Internship<br><em style="font-size:1.1rem;color:var(--theme);">Rotomation Artist</em></div>
+        <p class="exp-desc">Worked on multiple international film productions across various stages of post-production. Responsible for rotomating characters, creatures, and hard-surface objects with a focus on realistic animation principles, precise motion matching, and studio-level quality standards.</p>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <div class="exp-company">MFU</div>
+        <div class="exp-period">2022 – 2026</div>
+        <div class="exp-loc">Chiang Rai, TH</div>
+      </div>
+      <div>
+        <div class="exp-role">Teaching Assistant<br><em style="font-size:1.1rem;color:var(--theme);">3D & Animation</em></div>
+        <p class="exp-desc">Assisted instructors in teaching and mentoring junior students across 3D Texturing, Lighting & Rendering, and 3D Animation courses. Provided support on core concepts, production techniques, and industry-standard workflows.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-label">03</span>
+    <h2 class="section-title">Skills</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-group reveal">
+      <div class="skill-group-title">3D &amp; VFX Software</div>
+      <div class="skill-tags">
+        <span class="tag">Maya</span>
+        <span class="tag">Houdini</span>
+        <span class="tag">Blender</span>
+        <span class="tag">ZBrush</span>
+        <span class="tag">Substance Painter</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">VFX Specialization</div>
+      <div class="skill-tags">
+        <span class="tag">Matchmoving</span>
+        <span class="tag">Camera Tracking</span>
+        <span class="tag">Rotomation</span>
+        <span class="tag">2D Feature Tracking</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">3D Production</div>
+      <div class="skill-tags">
+        <span class="tag">Modeling</span>
+        <span class="tag">UV Unwrapping</span>
+        <span class="tag">Texturing</span>
+        <span class="tag">Animation</span>
+        <span class="tag">Lighting</span>
+        <span class="tag">Simulation</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Creative &amp; Languages</div>
+      <div class="skill-tags">
+        <span class="tag">Graphic Design</span>
+        <span class="tag">Video Editing</span>
+        <span class="tag">Content Creation</span>
+        <span class="tag">Thai (Native)</span>
+        <span class="tag">English (Conversational)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-label">04</span>
+    <h2 class="section-title">Projects</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="projects-grid">
+  
+    <!-- Project 1: GODZILLA -->
+    <div class="project-card reveal" onclick="openModal('modal-godzilla')">
+      <div class="project-img-wrapper">
+          <img src="GZ_thumbnail.jpg" alt="Godzilla The Vengeance">
+      </div>
+      <div class="project-overlay">
+          <div class="project-name">GODZILLA: The Vengeance</div>
+          <div class="project-tags">
+            <span class="project-tag">Maya</span>
+            <span class="project-tag">Arnold</span>
+            <span class="project-tag">Houdini</span>
+            <span class="project-tag">Karma</span>
+            <span class="project-tag">Substance</span>
+          </div>
+      </div>
+    </div>
+
+    <!-- Project 2: PANTHEON -->
+    <div class="project-card reveal" onclick="openModal('modal-pantheon')">
+      <div class="project-img-wrapper">
+          <img src="pantheon.jpg" alt="Pantheón Santa Cecilia">
+      </div>
+      <div class="project-overlay">
+          <div class="project-name">PANTHEóN SANTA CECILIA</div>
+          <div class="project-tags">
+            <span class="project-tag">Maya</span>
+            <span class="project-tag">Arnold</span>
+            <span class="project-tag">Substance</span>
+          </div>
+      </div>
+    </div>
+    
+    <!-- Project 3: WHALE -->
+    <div class="project-card reveal" onclick="openModal('modal-whale')">
+      <div class="project-img-wrapper">
+          <img src="whale.jpg" alt="Well, Whale">
+      </div>
+      <div class="project-overlay">
+          <div class="project-name">Well, Whale</div>
+          <div class="project-tags">
+            <span class="project-tag">Maya</span>
+            <span class="project-tag">Arnold</span>
+            <span class="project-tag">Substance</span>
+          </div>
+      </div>
+    </div>
+
+    <!-- Placeholder Project -->
+    <div class="project-card reveal" style="border:1px dashed var(--border); background:transparent; box-shadow:none; cursor:default;">
+      <div class="project-overlay" style="background:transparent; justify-content:center;">
+        <div class="project-name" style="color:var(--border);">Coming Soon</div>
+        <div style="font-family:'Space Mono', monospace; font-size:0.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em;">More Works Ahead</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <h2 class="contact-title reveal">Let's work<br><em>together.</em></h2>
+    <p class="contact-sub reveal">Open to VFX studio opportunities, freelance projects, and collaborations.</p>
+    <div class="contact-links reveal">
+      <a href="mailto:krisvanna.official@gmail.com" class="contact-link">
+        <span>Email:</span> krisvanna.official@gmail.com
+      </a>
+      <a href="tel:0833234323" class="contact-link">
+        <span>Tel:</span> 083-323-4323
+      </a>
+      <a href="#" class="contact-link">
+        <span>Location:</span> Lamphun, Thailand
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Kris Vanna. All Rights Reserved.</p>
+  <p>VFX Artist · Matchmove · Rotomation</p>
+</footer>
+
+<!-- MODALS -->
+<!-- Godzilla Modal -->
+<div class="modal-overlay" id="modal-godzilla">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('modal-godzilla')">&#x2715;</button>
+        <h3 class="modal-title">GODZILLA: The Vengeance</h3>
+        
+        <div class="slider-container">
+            <video controls poster="GZ_thumbnail.jpg" style="width: 100%; height: 100%; object-fit: contain;">
+                <source src="Godzilla_The_Vengeance.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        
+        <div class="modal-details">
+            <div class="project-tags" style="margin-bottom: 1.5rem; justify-content: flex-start;">
+                <span class="project-tag">Maya</span>
+                <span class="project-tag">Arnold</span>
+                <span class="project-tag">Houdini</span>
+                <span class="project-tag">Solaris Karma</span>
+                <span class="project-tag">Adobe Substance</span>
+            </div>
+            <p>A Full CG project created for my Senior Project, intended for internship applications. For this project, I was responsible for Animation, VFX Simulation, Lighting, and Compositing.</p>
+            <p>The core concept revolves around nature reclaiming balance from human destruction. Godzilla acts as nature's instrument of vengeance, representing the consequences of global warming and human-induced pollution.</p>
+            
+            <h4>Breakdown</h4>
+            <div class="slider-container" style="margin-top: 1rem; margin-bottom: 2rem;">
+                <video controls style="width: 100%; height: 100%; object-fit: contain;">
+                    <source src="Breakdown_GZ.mov" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <h4>Color Palette</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <img src="GODZILLA_2.9.1.jpg" alt="Godzilla Palette" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);">
+                <img src="Missile_to_God_Color_Palette_2.4.1.jpg" alt="Missile Palette" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);">
+                <img src="Destruction_2.8.1.jpg" alt="Destruction Palette" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);">
+                <img src="Drone_Coming_Color_Palette_2.3.1.jpg" alt="Drone Coming Palette" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);">
+                <img src="Drone_Top_2.6.1.jpg" alt="Drone Top Palette" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);">
+                <img src="Kettle_Color_Palette_2.1.1.jpg" alt="Kettle Palette" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pantheon Modal -->
+<div class="modal-overlay" id="modal-pantheon">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('modal-pantheon')">&#x2715;</button>
+        <h3 class="modal-title">PANTHEóN SANTA CECILIA</h3>
+        
+        <div class="slider-container">
+            <img src="pantheon.jpg" class="slider-slide active" alt="Pantheon Main">
+            <img src="Pantheon_BTS.jpg" class="slider-slide" alt="Pantheon BTS">
+            <button class="slider-btn prev" onclick="moveSlide('modal-pantheon', -1)">&#8592;</button>
+            <button class="slider-btn next" onclick="moveSlide('modal-pantheon', 1)">&#8594;</button>
+        </div>
+        
+        <div class="modal-details">
+            <div class="project-tags" style="margin-bottom: 1.5rem; justify-content: flex-start;">
+                <span class="project-tag">Maya</span>
+                <span class="project-tag">Arnold</span>
+                <span class="project-tag">Adobe Substance</span>
+            </div>
+            <p>PANTHEóN SANTA CECILIA was a challenging project in terms of environment lighting, creating a nighttime scene with subtle light coming through to build a mysterious and magical atmosphere.</p>
+            <h4>Skills Developed:</h4>
+            <ul>
+                <li><strong>Modeling:</strong> such as guitar, columns, and window frames.</li>
+                <li><strong>Material and Texture Selection:</strong> Choosing the right materials and textures to enhance the overall appearance of the scene.</li>
+                <li><strong>Lighting:</strong> Creating lighting that makes the scene look realistic but not overly so, suitable for animation.</li>
+                <li><strong>Realistic Nighttime Lighting:</strong> Setting up lighting for a nighttime scene that feels true to life.</li>
+                <li><strong>Atmosphere Design:</strong> Creating an atmosphere that adds a sense of mystery and intrigue to the scene.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Whale Modal -->
+<div class="modal-overlay" id="modal-whale">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('modal-whale')">&#x2715;</button>
+        <h3 class="modal-title">Well, Whale</h3>
+        
+        <div class="slider-container">
+            <img src="whale.jpg" class="slider-slide active" alt="Whale Main">
+            <img src="Whale_BTS.jpg" class="slider-slide" alt="Whale BTS">
+            <button class="slider-btn prev" onclick="moveSlide('modal-whale', -1)">&#8592;</button>
+            <button class="slider-btn next" onclick="moveSlide('modal-whale', 1)">&#8594;</button>
+        </div>
+        
+        <div class="modal-details">
+            <div class="project-tags" style="margin-bottom: 1.5rem; justify-content: flex-start;">
+                <span class="project-tag">Maya</span>
+                <span class="project-tag">Arnold</span>
+                <span class="project-tag">Adobe Substance</span>
+            </div>
+            <p>Well, Whale was an experimental project for me, focusing on lighting and creating an atmosphere in an underwater landscape, which was a new challenge.</p>
+            <p>This project was inspired by the movie Black Panther: Wakanda Forever. It’s a piece I’m truly proud of.</p>
+            <h4>Skills Developed:</h4>
+            <ul>
+                <li><strong>Creating an Underwater Atmosphere:</strong> Capturing the essence of the deep ocean.</li>
+                <li><strong>Lighting from Above the Water:</strong> Simulating light filtering down from the surface of the water to the ocean floor.</li>
+                <li><strong>Modeling Creatures with Low Poly Count:</strong> Designing creatures without excessive faces or polygons.</li>
+                <li><strong>Creating the Underwater Environment:</strong> Creating realistic underwater conditions.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ── CHAT WIDGET ── -->
+<style>
+  .chat-widget-btn {
+    position: fixed;
+    bottom: 1.8rem;
+    right: 1.8rem;
+    z-index: 998;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: var(--theme);
+    color: var(--bg);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple);
+  }
+  .chat-widget-btn:hover { transform: scale(1.08); }
+  .chat-widget-btn svg { width: 26px; height: 26px; stroke: var(--bg); fill: none; stroke-width: 2; }
+  .chat-widget-btn .icon-close { display: none; }
+  .chat-widget-btn.open .icon-chat { display: none; }
+  .chat-widget-btn.open .icon-close { display: block; }
+
+  .chat-widget-panel {
+    position: fixed;
+    bottom: 5.6rem;
+    right: 1.8rem;
+    z-index: 999;
+    width: min(92vw, 340px);
+    max-height: min(75vh, 480px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-modal);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+    pointer-events: none;
+    transition: opacity 0.3s var(--ease-apple), transform 0.3s var(--ease-apple);
+  }
+  .chat-widget-panel.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  .chat-widget-header {
+    padding: 1.1rem 1.4rem;
+    background: var(--theme-dim);
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-widget-header h4 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+  .chat-widget-header p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .chat-widget-body {
+    padding: 1.2rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    overflow-y: auto;
+  }
+  .chat-widget-body label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+  .chat-widget-body input,
+  .chat-widget-body textarea {
+    width: 100%;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 0.8rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.3s var(--ease-apple);
+  }
+  .chat-widget-body input:focus,
+  .chat-widget-body textarea:focus { border-color: var(--theme); }
+  .chat-widget-body textarea { resize: vertical; min-height: 80px; }
+  .chat-widget-submit {
+    margin-top: 0.2rem;
+    padding: 0.75rem;
+    background: var(--theme);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: opacity 0.3s var(--ease-apple);
+  }
+  .chat-widget-submit:hover { opacity: 0.85; }
+  .chat-widget-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .chat-widget-status {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    text-align: center;
+    color: var(--muted);
+    min-height: 1em;
+  }
+  .chat-widget-status.success { color: var(--theme); }
+  .chat-widget-status.error { color: #e05a5a; }
+</style>
+
+<button class="chat-widget-btn" id="chatWidgetBtn" aria-label="Open chat">
+  <svg class="icon-chat" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  <svg class="icon-close" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/></svg>
+</button>
+
+<div class="chat-widget-panel" id="chatWidgetPanel">
+  <div class="chat-widget-header">
+    <h4>Send me a message</h4>
+    <p>Fill in your details and I'll get back to you soon.</p>
+  </div>
+  <form class="chat-widget-body" id="chatWidgetForm">
+    <div>
+      <label for="cwName">Full name</label>
+      <input type="text" id="cwName" name="name" placeholder="Your full name" required>
+    </div>
+    <div>
+      <label for="cwEmail">Email</label>
+      <input type="email" id="cwEmail" name="email" placeholder="you@example.com" required>
+    </div>
+    <div>
+      <label for="cwMessage">Message</label>
+      <textarea id="cwMessage" name="message" placeholder="What would you like to say?" required></textarea>
+    </div>
+    <button type="submit" class="chat-widget-submit" id="chatWidgetSubmit">Send message</button>
+    <div class="chat-widget-status" id="chatWidgetStatus"></div>
+  </form>
+</div>
+
+<script>
+  // Chat widget toggle
+  const chatWidgetBtn = document.getElementById('chatWidgetBtn');
+  const chatWidgetPanel = document.getElementById('chatWidgetPanel');
+  chatWidgetBtn.addEventListener('click', () => {
+    chatWidgetBtn.classList.toggle('open');
+    chatWidgetPanel.classList.toggle('open');
+  });
+  document.addEventListener('click', (e) => {
+    if (!chatWidgetPanel.contains(e.target) && !chatWidgetBtn.contains(e.target)) {
+      chatWidgetBtn.classList.remove('open');
+      chatWidgetPanel.classList.remove('open');
+    }
+  });
+
+  // Chat widget form submit (uses Formspree — replace YOUR_FORM_ID below)
+  const chatWidgetForm = document.getElementById('chatWidgetForm');
+  const chatWidgetSubmit = document.getElementById('chatWidgetSubmit');
+  const chatWidgetStatus = document.getElementById('chatWidgetStatus');
+  const CHAT_WIDGET_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+
+  chatWidgetForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    chatWidgetSubmit.disabled = true;
+    chatWidgetStatus.textContent = 'Sending...';
+    chatWidgetStatus.className = 'chat-widget-status';
+
+    const formData = new FormData(chatWidgetForm);
+    try {
+      const response = await fetch(CHAT_WIDGET_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData
+      });
+      if (response.ok) {
+        chatWidgetStatus.textContent = 'Message sent. Thank you!';
+        chatWidgetStatus.classList.add('success');
+        chatWidgetForm.reset();
+      } else {
+        throw new Error('Send failed');
+      }
+    } catch (err) {
+      chatWidgetStatus.textContent = 'Something went wrong. Please try again.';
+      chatWidgetStatus.classList.add('error');
+    } finally {
+      chatWidgetSubmit.disabled = false;
+    }
+  });
+</script>
+
+<script>
+  // Theme toggle (dark/light mode)
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const savedTheme = localStorage.getItem('kv-theme');
+  if (savedTheme) {
+    root.setAttribute('data-theme', savedTheme);
+  } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    root.setAttribute('data-theme', 'light');
+  }
+  themeToggle.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const next = current === 'light' ? 'dark' : 'light';
+    if (next === 'dark') {
+      root.removeAttribute('data-theme');
+    } else {
+      root.setAttribute('data-theme', 'light');
+    }
+    localStorage.setItem('kv-theme', next);
+  });
+
+  // Nav shrink/lift on scroll (Apple-style)
+  const mainNav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 40) {
+      mainNav.classList.add('scrolled');
+    } else {
+      mainNav.classList.remove('scrolled');
+    }
+  });
+
+  // Hero Background Slider Logic
+  const heroSlides = document.querySelectorAll('.hero-slide');
+  let currentHeroSlide = 0;
+  
+  function nextHeroSlide() {
+      heroSlides[currentHeroSlide].classList.remove('active');
+      currentHeroSlide = (currentHeroSlide + 1) % heroSlides.length;
+      heroSlides[currentHeroSlide].classList.add('active');
+  }
+  
+  // Change slide every 5 seconds
+  setInterval(nextHeroSlide, 5000);
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Modal Functionality
+  function openModal(id) {
+      document.getElementById(id).classList.add('active');
+      document.body.style.overflow = 'hidden';
+  }
+  
+  function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+      document.body.style.overflow = 'auto';
+      
+      // Pause video when closing modal
+      const video = document.querySelector('#' + id + ' video');
+      if(video) {
+          video.pause();
+      }
+  }
+
+  // Close modal when clicking outside
+  window.onclick = function(event) {
+      if (event.target.classList.contains('modal-overlay')) {
+          event.target.classList.remove('active');
+          document.body.style.overflow = 'auto';
+          const videos = event.target.querySelectorAll('video');
+          videos.forEach(v => v.pause());
+      }
+  }
+
+  // Simple Slider Logic for Modals
+  function moveSlide(modalId, direction) {
+      const modal = document.getElementById(modalId);
+      const slides = modal.querySelectorAll('.slider-slide');
+      if (slides.length <= 1) return;
+
+      let activeIndex = -1;
+      slides.forEach((slide, index) => {
+          if (slide.classList.contains('active')) {
+              activeIndex = index;
+              slide.classList.remove('active');
+          }
+      });
+
+      let newIndex = activeIndex + direction;
+      if (newIndex >= slides.length) newIndex = 0;
+      if (newIndex < 0) newIndex = slides.length - 1;
+
+      slides[newIndex].classList.add('active');
+  }
+</script>
+</body>
+</html>
